@@ -1,0 +1,73 @@
+name: bug_fix
+description: Diagnose and fix a failing test or bug.
+
+inputs:
+  query: string
+  repo_path: string
+
+steps:
+  - id: reproduce
+    type: tool
+    tool: test.run
+    config:
+      path: inputs.repo_path
+    output: test_output
+
+  - id: analyze
+    type: model
+    model: reasoning
+    config:
+      prompt: "Analyze this test failure and identify the root cause.\n\nTest output:\n{test_output}"
+
+  - id: search_code
+    type: tool
+    tool: code.search
+    config:
+      query: inputs.query
+    output: search_results
+
+  - id: read_files
+    type: tool
+    tool: fs.read
+    config:
+      paths: search_results.files
+    output: file_contents
+
+  - id: hypothesize
+    type: model
+    model: reasoning
+    config:
+      prompt: "Given the code and error, what is the most likely root cause?"
+
+  - id: patch
+    type: tool
+    tool: fs.write
+    config:
+      path: search_results.target_file
+      content: hypothesize.patch
+    output: patch_result
+
+  - id: verify
+    type: tool
+    tool: test.run
+    config:
+      path: inputs.repo_path
+      filter: inputs.query
+    output: verify_output
+
+  - id: full_test
+    type: tool
+    tool: test.run
+    config:
+      path: inputs.repo_path
+    output: full_test_output
+
+  - id: validate
+    type: evaluator
+    evaluator: test_pass
+
+  - id: summarize
+    type: model
+    model: fast
+    config:
+      prompt: "Summarize the fix in one paragraph."

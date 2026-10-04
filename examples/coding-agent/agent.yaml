@@ -1,0 +1,35 @@
+name: coding-agent
+version: "0.1"
+description: "Coding agent using Bedrock."
+
+identity:
+  role: repository-engineer
+  objective: assist with code changes
+  style: evidence-first
+
+tools:
+  - code.search
+  - fs.read
+  - fs.write
+  - shell.execute
+  - git.diff
+
+skills:
+  - investigate_bug
+  - review_pull_request
+
+workflows:
+  - bug_investigation
+  - code_review
+
+policies:
+  permissions:
+    filesystem: workspace
+    shell: required
+    network: false
+
+adapters:
+  - cli
+  - fastapi
+
+mode: planner

@@ -1,0 +1,35 @@
+permissions:
+  - capability: fs.read
+    allow: true
+    conditions:
+      path_prefix: "."
+
+  - capability: fs.write
+    allow: true
+    require_approval: true
+    conditions:
+      path_prefix: "."
+      max_size: 1048576
+
+  - capability: shell.execute
+    allow: true
+    require_approval: true
+    max_risk: medium
+
+  - capability: git.diff
+    allow: true
+
+  - capability: git.log
+    allow: true
+
+  - capability: test.run
+    allow: true
+
+  - capability: network.http
+    allow: false
+
+  - capability: git.push
+    allow: false
+
+  - capability: fs.delete
+    allow: false

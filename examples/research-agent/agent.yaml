@@ -1,0 +1,34 @@
+name: research-agent
+version: "0.1"
+description: "Research agent using Bedrock."
+
+identity:
+  role: research-engine
+  objective: assist with research tasks
+  style: evidence-first
+
+tools:
+  - web.search
+  - web.fetch
+  - fs.read
+  - fs.write
+
+skills:
+  - investigate
+
+workflows:
+  - research
+
+policies:
+  permissions:
+    network: true
+    filesystem: workspace
+
+knowledge:
+  - ./knowledge/
+
+adapters:
+  - cli
+  - openai_api
+
+mode: tool_loop

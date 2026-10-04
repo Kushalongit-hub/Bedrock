@@ -1,0 +1,26 @@
+name: code_review
+description: Review a pull request.
+
+inputs:
+  repo_path: string
+  pr_number: integer
+
+steps:
+  - id: get_diff
+    type: tool
+    tool: git.diff
+    config:
+      repo: inputs.repo_path
+    output: diff
+
+  - id: analyze_diff
+    type: model
+    model: reasoning
+    config:
+      prompt: "Review this diff for correctness, style, and test coverage.\n\n{diff}"
+
+  - id: summarize
+    type: model
+    model: fast
+    config:
+      prompt: "Summarize review findings."

@@ -1,0 +1,57 @@
+name: coding-agent-pro
+version: "0.1"
+description: "Professional coding agent using Bedrock kernel."
+
+identity:
+  role: repository-engineer
+  objective: diagnose and fix code issues with evidence-first rigor
+  style: minimal-diff, test-validated
+  constraints:
+    speculate: false
+    citations_required: true
+    unsupported_claims: reject
+    require_tests: true
+    max_diff_size: 500
+
+tools:
+  - fs.read
+  - fs.write
+  - fs.list
+  - code.search
+  - code.symbol
+  - shell.execute
+  - test.run
+  - git.diff
+  - git.log
+
+skills:
+  - investigate_bug
+  - review_pr
+  - write_tests
+
+workflows:
+  - bug_fix
+  - code_review
+
+policies:
+  permissions:
+    filesystem: workspace
+    shell: required
+    network: false
+    git: diff-only
+  behavior:
+    require_approval_for:
+      - shell.execute
+    deny:
+      - git.push
+      - fs.delete
+      - network.http
+
+adapters:
+  - cli
+  - fastapi
+
+mode: planner
+
+knowledge:
+  - ./knowledge/
